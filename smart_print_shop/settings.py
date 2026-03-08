@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'print_shop',
     'corsheaders',
     'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
