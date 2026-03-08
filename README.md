@@ -153,8 +153,8 @@ docker-compose up --build
 
 ## Contact
 For inquiries, support, or collaboration:  
-- **Email**: support@smartprint.com  
-- **Phone**: +254-700-123-456  
+- **Email**: kwanusujoseph@gmail.com  
+- **Phone**: +254-725-439-354  
 - **Website**: [www.smartprint.com](http://www.smartprint.com)  
 - **Address**: SmartPrint HQ, Nairobi, Kenya  
 
