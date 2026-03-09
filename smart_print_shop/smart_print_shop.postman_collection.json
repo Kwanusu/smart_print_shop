@@ -1,0 +1,74 @@
+{
+  "info": {
+    "name": "Smart Print Shop API",
+    "description": "Postman collection for Smart Print Shop viewsets with full CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/customers/" } }
+        },
+        {
+          "name": "Create Customer",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"name\": \"Alice\", \"email\": \"alice@example.com\" }" }, "url": { "raw": "{{base_url}}/customers/" } }
+        },
+        {
+          "name": "Retrieve Customer",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/customers/1/", "path": ["customers","1"] } }
+        },
+        {
+          "name": "Update Customer",
+          "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"name\": \"Alice Updated\", \"email\": \"alice@example.com\" }" }, "url": { "raw": "{{base_url}}/customers/1/", "path": ["customers","1"] } }
+        },
+        {
+          "name": "Delete Customer",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/customers/1/", "path": ["customers","1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        { "name": "List Orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/orders/" } } },
+        { "name": "Create Order", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"customer\": 1, \"total_price\": 100.00 }" }, "url": { "raw": "{{base_url}}/orders/" } } },
+        { "name": "Retrieve Order", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/orders/1/" } } },
+        { "name": "Update Order", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"completed\", \"total_price\": 120.00 }" }, "url": { "raw": "{{base_url}}/orders/1/" } } },
+        { "name": "Delete Order", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/orders/1/" } } }
+      ]
+    },
+    {
+      "name": "Print Jobs",
+      "item": [
+        { "name": "List Print Jobs", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/print_job/" } } },
+        { "name": "Create Print Job", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"order\": 1, \"job_type\": \"poster\", \"quantity\": 10, \"price_per_unit\": 5.00 }" }, "url": { "raw": "{{base_url}}/print_job/" } } },
+        { "name": "Retrieve Print Job", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/print_job/1/" } } },
+        { "name": "Update Print Job", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"status\": \"completed\" }" }, "url": { "raw": "{{base_url}}/print_job/1/" } } },
+        { "name": "Delete Print Job", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/print_job/1/" } } }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        { "name": "List Users", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/users/" } } },
+        { "name": "Retrieve User", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/users/1/" } } },
+        { "name": "Update User", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"full_name\": \"Updated User\" }" }, "url": { "raw": "{{base_url}}/users/1/" } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/users/1/" } } }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        { "name": "List Employees", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/employees/" } } },
+        { "name": "Create Employee", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"user\": 1, \"role\": \"designer\" }" }, "url": { "raw": "{{base_url}}/employees/" } } },
+        { "name": "Retrieve Employee", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/employees/1/" } } },
+        { "name": "Update Employee", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"role\": \"admin\" }" }, "url": { "raw": "{{base_url}}/employees/1/" } } },
+        { "name": "Delete Employee", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }], "url": { "raw": "{{base_url}}/employees/1/" } } }
+      ]
+    }
+    ]
+}
