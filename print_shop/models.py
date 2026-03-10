@@ -82,8 +82,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['email', 'full_name']
 
     def __str__(self):
-        return f"{self.full_name} (@{self.username})"
-        
+        return f"{self.full_name} (@{self.username})"       
     
 class Employee(models.Model):
     ROLE_CHOICES = [
