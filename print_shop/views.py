@@ -9,6 +9,9 @@ from .serializers import (
     ActivityLogSerializer
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from django.db import connection
 
 class CustomerViewSet(viewsets.ModelViewSet):
     """
@@ -90,3 +93,24 @@ class ActivityLogViewSet(viewsets.ModelViewSet):
     queryset = ActivityLog.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ActivityLogSerializer
+
+class HealthCheckViewSet(viewsets.ViewSet):
+    """
+    A ViewSet to check system status.
+    """
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        status_data = {
+            "status": "ok",
+            "database": "connected",
+            "message": "Connected to Smart Print Shop!"
+        }
+        try:
+            connection.ensure_connection()
+        except Exception:
+            status_data["status"] = "unhealthy"
+            status_data["database"] = "disconnected"
+            return Response(status_data, status=503)
+            
+        return Response(status_data)        
