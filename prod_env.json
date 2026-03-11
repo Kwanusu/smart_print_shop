@@ -1,0 +1,7 @@
+{
+  "name": "PrintShop - Production",
+  "values": [
+    { "key": "base_url", "value": "https://your-app.vercel.app/api", "enabled": true },
+    { "key": "jwt_token", "value": "", "enabled": true }
+  ]
+}

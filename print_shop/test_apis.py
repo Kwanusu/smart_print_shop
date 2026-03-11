@@ -11,19 +11,15 @@ UserModel = get_user_model()
 class BaseAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        # Create a test user
         self.user = UserModel.objects.create_user(
             username="testuser",
             password="testpass123",
             full_name="Test User",
             email="test@example.com"
         )
-        # Generate JWT token
         refresh = RefreshToken.for_user(self.user)
         self.token = str(refresh.access_token)
-        # Attach token to client
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
-        # Create a customer for use in related models
         self.customer = Customer.objects.create(name="Joseph", email="joseph@example.com")
 
 
@@ -39,7 +35,7 @@ class CustomerViewSetTests(BaseAPITest):
         self.assertEqual(response.json()["name"], "Alice")
 
     def test_create_customer_invalid(self):
-        payload = {"name": "Bob"}  # missing email
+        payload = {"name": "Bob"} 
         response = self.client.post(reverse("customers-list"), payload, format="json")
         self.assertEqual(response.status_code, 400)
 
@@ -87,7 +83,7 @@ class EmployeeViewSetTests(BaseAPITest):
         self.assertEqual(response.status_code, 200)
 
     def test_create_employee_invalid(self):
-        payload = {}  # missing required fields
+        payload = {} 
         response = self.client.post(reverse("employees-list"), payload, format="json")
         self.assertEqual(response.status_code, 400)
 

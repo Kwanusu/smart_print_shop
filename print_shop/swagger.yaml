@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Smart Print Shop API
   version: 1.0.0
-  description: API documentation for the Smart Print Shop system.
+  description: Complete API documentation for the Smart Print Shop system including Authentication and Activity Tracking.
 
 servers:
   - url: http://localhost:8000/api
@@ -16,10 +16,23 @@ components:
       bearerFormat: JWT
 
   schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string, format: password }
+
+    TokenResponse:
+      type: object
+      properties:
+        access: { type: string }
+        refresh: { type: string }
+
     Customer:
       type: object
       properties:
-        id: { type: integer }
+        id: { type: integer, readOnly: true }
         name: { type: string }
         email: { type: string }
         phone: { type: string }
@@ -28,7 +41,7 @@ components:
     Order:
       type: object
       properties:
-        id: { type: integer }
+        id: { type: integer, readOnly: true }
         customer: { type: integer }
         order_date: { type: string, format: date-time }
         status: { type: string, enum: [pending, in_production, completed, delivered] }
@@ -37,7 +50,7 @@ components:
     PrintJob:
       type: object
       properties:
-        id: { type: integer }
+        id: { type: integer, readOnly: true }
         order: { type: integer }
         job_type: { type: string }
         quantity: { type: integer }
@@ -47,42 +60,63 @@ components:
     User:
       type: object
       properties:
-        id: { type: integer }
+        id: { type: integer, readOnly: true }
         username: { type: string }
         full_name: { type: string }
         email: { type: string }
         employee_id: { type: string }
         phone_number: { type: string }
         whatsapp_number: { type: string }
-        bio: { type: string }
         is_verified: { type: boolean }
 
     Employee:
       type: object
       properties:
-        id: { type: integer }
+        id: { type: integer, readOnly: true }
         user: { type: integer }
         role: { type: string }
 
     ActivityLog:
       type: object
       properties:
-        id: { type: integer }
+        id: { type: integer, readOnly: true }
         user: { type: integer }
         action: { type: string }
         order: { type: integer, nullable: true }
-        job: { type: integer, nullable: true }
         timestamp: { type: string, format: date-time }
         details: { type: string }
+
+    Error:
+      type: object
+      properties:
+        code: { type: integer }
+        message: { type: string }
 
 security:
   - BearerAuth: []
 
 paths:
+  # --- AUTHENTICATION ---
+  /auth/login/:
+    post:
+      summary: Obtain JWT tokens
+      security: [] 
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TokenResponse' }
+        '401': { description: Unauthorized }
+
+  # --- CUSTOMERS ---
   /customers/:
     get:
       summary: List customers
-      security: [ { BearerAuth: [] } ]
       responses:
         '200':
           description: List of customers
@@ -93,14 +127,12 @@ paths:
                 items: { $ref: '#/components/schemas/Customer' }
     post:
       summary: Create customer
-      security: [ { BearerAuth: [] } ]
       requestBody:
-        required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/Customer' }
       responses:
-        '201': { description: Customer created }
+        '201': { description: Created }
 
   /customers/{id}/:
     get:
@@ -111,52 +143,26 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: Customer retrieved }
-        '404': { description: Not found }
-    put:
-      summary: Update customer
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Customer' }
-      responses:
-        '200': { description: Customer updated }
-    delete:
-      summary: Delete customer
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        '204': { description: Customer deleted }
+        '200': { description: Success }
+        '404': { description: Not Found }
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
 
+  # --- ORDERS ---
   /orders/:
     get:
       summary: List orders
-      responses:
-        '200':
-          description: List of orders
-          content:
-            application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Order' }
     post:
       summary: Create order
       requestBody:
-        required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/Order' }
       responses:
-        '201': { description: Order created }
+        '201': { description: Created }
 
   /orders/{id}/:
     get:
@@ -167,100 +173,37 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: Order retrieved }
-        '404': { description: Not found }
-    put:
-      summary: Update order
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Order' }
-      responses:
-        '200': { description: Order updated }
-    delete:
-      summary: Delete order
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        '204': { description: Order deleted }
+        '200': { description: Success }
 
+  # --- PRINT JOBS ---
   /print_job/:
     get:
       summary: List print jobs
-      responses:
-        '200':
-          description: List of print jobs
-          content:
-            application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/PrintJob' }
     post:
       summary: Create print job
       requestBody:
-        required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/PrintJob' }
       responses:
-        '201': { description: Print job created }
+        '201': { description: Created }
 
   /print_job/{id}/:
     get:
-      summary: Retrieve print job
+      summary: Retrieve job
       parameters:
         - in: path
           name: id
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: Print job retrieved }
-        '404': { description: Not found }
-    put:
-      summary: Update print job
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/PrintJob' }
-      responses:
-        '200': { description: Print job updated }
-    delete:
-      summary: Delete print job
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        '204': { description: Print job deleted }
+        '200': { description: Success }
 
+  # --- USERS & EMPLOYEES ---
   /users/:
     get:
       summary: List users
-      responses:
-        '200':
-          description: List of users
-          content:
-            application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/User' }
-
+  
   /users/{id}/:
     get:
       summary: Retrieve user
@@ -270,52 +213,19 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: User retrieved }
-        '404': { description: Not found }
-    put:
-      summary: Update user
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/User' }
-      responses:
-        '200': { description: User updated }
-    delete:
-      summary: Delete user
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        '204': { description: User deleted }
+        '200': { description: Success }
 
   /employees/:
     get:
       summary: List employees
-      responses:
-        '200':
-          description: List of employees
-          content:
-            application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Employee' }
     post:
       summary: Create employee
       requestBody:
-        required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/Employee' }
       responses:
-        '201': { description: Employee created }
+        '201': { description: Created }
 
   /employees/{id}/:
     get:
@@ -326,19 +236,37 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: Employee retrieved }
-        '404': { description: Not found }
-    put:
-      summary: Update employee
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Employee' }
+        '200': { description: Success }
+        '404': { description: Not Found }
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  # --- ACTIVITY LOGS ---
+  /activity-logs/:
+    get:
+      summary: Retrieve system history
       responses:
         '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ActivityLog' }
+# --- HEALTH CHECK ---
+  /health/:
+    get:
+      summary: API Health Check
+      security: [] 
+      responses:
+        '200':
+          description: Server is online
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: "ok" }                
